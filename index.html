@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Anthonette & Peter — Our Love Story</title>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: #0d0620;
+      color: #fff;
+      font-family: 'Montserrat', sans-serif;
+      text-align: center;
+      padding: 3em 1em;
+      overflow: hidden;
+    }
+
+    h1 {
+      font-family: 'Great Vibes', cursive;
+      font-size: 3em;
+      color: #ffb6c1;
+      text-shadow: 0 0 25px #ffb6c1;
+      margin-bottom: 0.2em;
+    }
+
+    h2 {
+      font-size: 1.3em;
+      color: #fcd2e2;
+      font-weight: 400;
+      margin-top: 0;
+    }
+
+    .intro {
+      font-size: 1.2em;
+      margin: 2em auto;
+      max-width: 600px;
+      color: #f9d9e2;
+    }
+
+    button {
+      padding: 1em 2.5em;
+      font-size: 1.2em;
+      border: none;
+      margin: 1em;
+      border-radius: 40px;
+      background: linear-gradient(to right, #ffc0cb, #ff69b4);
+      color: #1a0b1f;
+      font-weight: bold;
+      box-shadow: 0 0 15px rgba(255, 105, 180, 0.7);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      transform: scale(1.1);
+      background: linear-gradient(to right, #ff9dbb, #ff3e91);
+    }
+
+    #reply-display {
+      font-size: 1.5em;
+      margin-top: 2em;
+      color: #ffd700;
+      text-shadow: 0 0 10px #ff69b4;
+    }
+
+    .hearts, .sparkles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .heart, .sparkle {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background-size: cover;
+      opacity: 0.8;
+    }
+
+    .heart {
+      background-image: url('https://upload.wikimedia.org/wikipedia/commons/4/49/Red_Heart.svg');
+      animation: floatHearts 12s infinite ease-in;
+    }
+
+    .sparkle {
+      background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Sparkle_star.svg/20px-Sparkle_star.svg.png');
+      animation: floatHearts 15s infinite ease-in;
+    }
+
+    @keyframes floatHearts {
+      0% {
+        transform: translateY(100vh) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-10vh) scale(0.5);
+        opacity: 0;
+      }
+    }
+
+    .footer {
+      margin-top: 3em;
+      font-size: 1em;
+      color: #ffcce6;
+      font-style: italic;
+    }
+
+    #response-list {
+      margin-top: 2em;
+      max-height: 150px;
+      overflow-y: auto;
+      font-size: 0.8em;
+      color: #ffcfe3;
+      opacity: 0.8;
+    }
+
+    .response {
+      margin: 0.3em auto;
+      padding: 0.3em;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      width: 90%;
+      max-width: 500px;
+    }
+  </style>
+</head>
+<body>
+  <div class="hearts"></div>
+  <div class="sparkles"></div>
+  <script>
+    // Hearts and sparkles animation
+    function createFloatingElements(className, count) {
+      for (let i = 0; i < count; i++) {
+        const el = document.createElement('div');
+        el.className = className;
+        el.style.left = Math.random() * 100 + 'vw';
+        el.style.animationDuration = (6 + Math.random() * 6) + 's';
+        el.style.animationDelay = Math.random() * 5 + 's';
+        document.body.querySelector('.' + className).appendChild(el);
+      }
+    }
+    createFloatingElements('heart', 25);
+    createFloatingElements('sparkle', 15);
+  </script>
+
+  <h1>Anthonette & Peter</h1>
+  <h2>are tying the knot 💍</h2>
+
+  <p class="intro">
+    Our journey of love is turning into forever. <br/>
+    A celebration is coming soon... and we want you to be part of it.
+  </p>
+
+  <p>Will you celebrate this love with us?</p>
+
+  <div>
+    <button onclick="submitResponse('YES – Love always wins 💕')">Yes, love wins! 💖</button>
+    <button onclick="submitResponse('NO – but I still wish you love! 😮')">Not today 😢</button>
+  </div>
+
+  <div id="reply-display"></div>
+
+  <div class="footer">
+    Wedding Date: To Be Announced • With love from our hearts 💗
+  </div>
+
+  <!-- ✨ Response List -->
+  <div id="response-list"></div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+    import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDrWq7_rvcAMR1xS3YFudIffdcBxrVHVRY",
+      authDomain: "engranthntt.firebaseapp.com",
+      databaseURL: "https://engranthntt-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "engranthntt",
+      storageBucket: "engranthntt.firebasestorage.app",
+      messagingSenderId: "926247988802",
+      appId: "1:926247988802:web:9a53a2017eefd101f4c7db",
+      measurementId: "G-MM00N27918"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const responsesRef = ref(db, "responses");
+
+    async function submitResponse(answer) {
+      const timestamp = new Date().toLocaleString();
+      const res = await fetch("https://api.ipify.org?format=json");
+      const data = await res.json();
+      const ip = data.ip || "unknown";
+
+      push(responsesRef, { answer, time: timestamp, ip });
+
+      const reply = answer.includes("NO") 
+        ? "Aww... it's okay. Love still surrounds us 💔🌙"
+        : "Yay! You’re part of our forever 💞💍";
+
+      document.getElementById('reply-display').textContent = reply;
+    }
+
+    onChildAdded(responsesRef, (data) => {
+      const val = data.val();
+      const el = document.createElement("div");
+      el.className = "response";
+      el.innerHTML = `💬 <strong>${val.answer}</strong><br/><small>🕒 ${val.time} • 🌐 ${val.ip}</small>`;
+      document.getElementById("response-list").prepend(el);
+    });
+
+    window.submitResponse = submitResponse;
+  </script>
+</body>
+</html>
