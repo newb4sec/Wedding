@@ -168,53 +168,8 @@
     Wedding Date: To Be Announced • With love from our hearts 💗
   </div>
 
-  <!-- ✨ Response List -->
   <div id="response-list"></div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-    import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyDrWq7_rvcAMR1xS3YFudIffdcBxrVHVRY",
-      authDomain: "engranthntt.firebaseapp.com",
-      databaseURL: "https://engranthntt-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "engranthntt",
-      storageBucket: "engranthntt.firebasestorage.app",
-      messagingSenderId: "926247988802",
-      appId: "1:926247988802:web:9a53a2017eefd101f4c7db",
-      measurementId: "G-MM00N27918"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const responsesRef = ref(db, "responses");
-
-    async function submitResponse(answer) {
-      const timestamp = new Date().toLocaleString();
-      const res = await fetch("https://api.ipify.org?format=json");
-      const data = await res.json();
-      const ip = data.ip || "unknown";
-
-      push(responsesRef, { answer, time: timestamp, ip });
-
-      const reply = answer.includes("NO") 
-        ? "Aww... it's okay. Love still surrounds us 💔🌙"
-        : "Yay! You’re part of our forever 💞💍";
-
-      document.getElementById('reply-display').textContent = reply;
-    }
-
-    onChildAdded(responsesRef, (data) => {
-      const val = data.val();
-      const el = document.createElement("div");
-      el.className = "response";
-      el.innerHTML = `💬 <strong>${val.answer}</strong><br/><small>🕒 ${val.time} • 🌐 ${val.ip}</small>`;
-      document.getElementById("response-list").prepend(el);
-    });
-
-    window.submitResponse = submitResponse;
-  </script>
+  <script type="module" src="firebase-init.js"></script>
 </body>
 </html>
-
